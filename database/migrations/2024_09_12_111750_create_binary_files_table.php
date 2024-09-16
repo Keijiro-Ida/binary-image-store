@@ -33,4 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Sche
+        Schema::dropIfExists('binary_files');
+    }
+};

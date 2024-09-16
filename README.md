@@ -1,66 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 画像のバイナリ登録システム
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 概要
 
-## About Laravel
+画像をバイナリデータに変換してデータベースに保存し、再度バイナリデータを画像として表示する機能です。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 背景
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+従来、APサーバー上に画像ファイルを直接配置していましたが、以下のようなセキュリティ上の懸念がありました。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 画像ファイルがサーバー上に直接配置されているため、不正アクセスやファイルの改ざんのリスクが存在する。
+- URLの予測やディレクトリトラバーサル攻撃による意図しないファイルアクセスのリスク。
 
-## Learning Laravel
+これらのリスクを軽減するため、画像ファイルをバイナリデータに変換し、データベースに保存する方式に変更しました。この方法により、サーバー上に画像ファイルを直接配置する必要がなくなり、セキュリティの強化を図ることができます。
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 主な機能
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- 画像のアップロードとバイナリ形式でのデータベースへの保存
+- 保存された画像データをデコードして表示
+- Laravel Breezeを使用したユーザー認証機能（ログイン、登録、パスワードリセットなど）
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## アーキテクチャ
 
-## Laravel Sponsors
+- コントローラ: BinaryFileController
+  - ユーザーのリクエストを受け取り、画像のアップロードや表示などの処理を行います。
+  - 各種バリデーションとサービス呼び出しのためのロジックを含みます。
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- サービス: BinaryFileService
+  - 画像のバイナリ変換、データベースへの保存、バイナリデータのデコードなどのビジネスロジックを担当します。
+  - BinaryFileControllerから呼び出され、具体的な処理を実行します。
 
-### Premium Partners
+## 必要なツール
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Docker
+- Laravel Sail
+- Laravel Breeze
 
-## Contributing
+## インストールとセットアップ
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. 依存パッケージのインストール
 
-## Code of Conduct
+   Dockerがインストールされている環境で、以下のコマンドを実行してください。
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+./vendor/bin/sail up -d
+./vendor/bin/sail composer install
+./vendor/bin/sail npm install && ./vendor/bin/sail npm run dev
 
-## Security Vulnerabilities
+2. Laravel Breezeのインストール
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Breezeは既にセットアップされていますが、再度セットアップする場合は以下のコマンドを実行します。
 
-## License
+./vendor/bin/sail artisan breeze:install
+./vendor/bin/sail artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. 環境ファイルの設定
+
+.env.exampleファイルをコピーして、.envを作成し、必要に応じて環境設定を変更します。
+
+4. データベースのマイグレーション
+
+./vendor/bin/sail artisan migrate
+
+使用方法
+画像のアップロード
+画像をアップロードすると、バイナリデータに変換されデータベースに保存されます。
+
+画像の表示
+保存された画像データは、デコードされて表示されます。
