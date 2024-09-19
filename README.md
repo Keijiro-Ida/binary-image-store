@@ -21,11 +21,11 @@
 
 ## アーキテクチャ
 
-- コントローラ: BinaryFileController
+- コントローラ: app/Http/BinaryFileController.php
   - ユーザーのリクエストを受け取り、画像のアップロードや表示などの処理を行います。
   - 各種バリデーションとサービス呼び出しのためのロジックを含みます。
 
-- サービス: BinaryFileService
+- サービス: app/Services/BinaryFileService.php
   - 画像のバイナリ変換、データベースへの保存、バイナリデータのデコードなどのビジネスロジックを担当します。
   - BinaryFileControllerから呼び出され、具体的な処理を実行します。
 

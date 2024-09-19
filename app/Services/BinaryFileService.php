@@ -145,7 +145,6 @@ class BinaryFileService
      *
      * 画像データをデータベースに保存
      *
-     * @param string $field 対象フィールド（例: 'customer_id'）
      * @param int $binaryTypeId
      * @param string $binaryImage
      * @param string $format
